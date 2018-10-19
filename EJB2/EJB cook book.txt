@@ -1,0 +1,8 @@
+Download J2EE (JavaEE) SDK (it contains RI deploytool) and install
+
+open http://localhost:4848/
+
+can change port by this: Refer: https://www.mobilefish.com/developer/j2ee/j2ee_quickguide_glassfish_ports.html
+
+in cmd: 
+D:\Development_Environment\JAVA\glassfish4\glassfish\bin>asadmin start-domain domain1

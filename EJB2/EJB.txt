@@ -1,0 +1,119 @@
+EJB 2
+
+https://www.youtube.com/watch?v=aHGGMX_Zq1w&list=PLqq-6Pq4lTTY40IcG584ynNqibMc1heIa
+
+-EJB : component based applications
+-EJB supports transactions, security and concurrency. But it doesn't guarantee load balancing, fail-over or clustering
+-EJB supports three bean types: session, entity and message driven
+-Session beans can be stateful or stateless
+-EJB components (beans) can be assembled and reassembled into different applications
+-A Customer bean which represents a customer in a database, can be created 
+-That Customer bean can be shared among multiple applications
+
+-Component based development: Instead of reusing Java classes, reuse a bigger chunk of functionality.
+-it is possible to modify a bean in a way that it works without ever touching its Java code.
+-a bean can be configured and customized through an XML based deployment descriptor to change the way the bean behaves at runtime.
+
+-focus on business logic. EJB will take care of underlying services (transactions, networking, security)
+-EJB let's you customize and configure reusable components at deploy time, without touching the source code!
+-The way a bean uses the underlying services can be done by tweaking an XML at deployment time
+-The security access contril for a bean's methods can be defined in XML (declaratively) rather than programmatically.
+-The way a bean's methods run in transactions can be customized in the deployment descriptor.(no need to hard-code in transaction boundaries and behaviors.)
+
+-EJB servers give bunch of services, so that no need to write:
+* transaction management
+* security
+* concurrency
+* networking
+* resource management
+* persistence
+* messaging
+* deploy-time customization
+
+-Enterprise beans are portable not just to different JVMs, but to different EJB servers.
+(Java - portable across multiple platforms : Write Once - Run Anywhere (WORA), EJB - Write Once - Deploy Anywhere (WODA))
+
+EJB and J2EE:
+-Both are specifications for a server. But, EJB is subset of J2EE. A J2EE server must include an EJB container.
+-The thing that EJBs run in is : EJB container.
+-A J2EE server include a Web container (to run servlets and JSPs) and EJB container.
+
+-EJB components can't live outside of an EJB container. They don't have a main method.
+
+regular java beans and EJB:
+-java bean means a reusable component.
+-regular java beans : reusable components that follow a naming convention that can be used by development tools.
+
+(Eg: Swing GUI components. All Java IDEs are javabean compliant, Jini and servlets can use Javabean features)
+
+-EJB are also reusable components. The bean part of a regular bean is used mostly at development time. It runs in a JVM, just like any other normal Java class.
+Bean part of an Enterprise bean kicks in at runtime and it should be run under the control and protection of an EJB container.
+
+-The server steps into the middle of every method call from a client to a bean and inserts the "services" like security, transactions and persistence.
+-beans live and run in the server. Server virtually manages the life and death of them.
+-these are done in each time a client makes a request. (calls a business method on the bean)
+
+Client: a servlet, a standalone Java app, another EJB, a mobile device.
+
+The EJB object intercepts the calls to the bean. A client can never talk directly to the bean.
+Then services are needed to be crossed.
+business logic lives in Enterprise bean.
+
+Beans in three flavors:
+-Entity : represent a thing in a persistent store. (A row in a table: if the database is normalized then draw from multiple tables) Eg: Customer
+
+-Message-driven : only when you need a JMS consumer. It can listen for messages from a JMS messaging service.
+Client send a message to a messaging service.
+It has no EJB object
+Eg: NewCustomerNotification subscriber.
+
+-Session : for everything else. any kind of back-end service should begin with a session bean.
+An entity bean : A thing (like noun), A session bean : A process, A session bean : A verb
+Eg: A shopping session, a credit card processing system
+
+Session beans can be marked at deployment time as either stateless or stateful
+
+A stateful bean can remember conversational state between method calls and a stateless bean can't.
+
+Conversational state: client-specific state. Eg: shopping cart
+A good shopping cart will keep the client shopper state for as long as the shopping session is alive.
+
+Stateless beans : forget about the client once the method call completes. (for services that don't require a continued conversation between the client and the service.
+stateless beans can have state. But not client-specific state. (can have instance variables. can't maintain values specific to a particular client)
+
+Stateless session beans are generally more scalable than stateful beans because of the way stateless beans are managed by the container.
+
+Alternative way for stateful beans:
+1. using the client to store state.
+2. using a servlet to store state.
+3. using a database to store state between each method call from the client.
+
+These are more of a performance hit than the less scalable nature of stateful session beans.
+
+An entity bean is something. A session bean does something.
+
+SessionBean is not a marker interface or tag interface. The methods implemented from the SessionBean interface : Container-callbacks.
+Container-callbacks is used by the container to notify of important milestones in the bean's life.
+
+Bean class : actual business logic resides
+Component interface : All the business methods are declared
+
+Home interface: A factory for bean references
+Client uses it to ask for a reference to the component interface.
+
+Although client looks as though the AdviceBean is the object it is invoking methods on, the client really invokes methods on something called an EJBObject, that is implemented by the server at deploy-time.
+
+Server will make the EJBObject by implementing Advice interface, and which intercepts all business method calls to the bean.
+
+EJB programmers use EJB-savvy development tools.
+
+An XML deployment descriptor tells the server what your bean is and how it should be managed.
+
+Need to specify which class is which and how they're connected in deployment descriptor. Should name it as ejb-jar.xml
+
+A tool to build a deployment descriptor: J2EE RI bean wizard
+
+Bean developer or bean provider.
+
+RI deploytool to build a jar. jar can be in any name. RI deploytool is part of J2EE (or Java EE) SDK
+
